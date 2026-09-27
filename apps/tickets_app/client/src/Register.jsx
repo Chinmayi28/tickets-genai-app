@@ -45,9 +45,9 @@ function Register() {
                     className="form-select mb-3"
                     value={form.role}
                     onChange={ e => setForm( {...form, role:Number(e.target.value)} ) } >
-                    <option value="1">Customer</option>
-                    <option value="2">Support Agent</option>
-                    <option value="3">Support Team Leader</option>
+                    <option value="1">Employee</option>
+                    <option value="2">Support Engineer</option>
+                    <option value="3">Team Leader</option>
                     <option value="4">Admin</option>
                 </select>
 

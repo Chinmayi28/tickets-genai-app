@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import api from './api';
 
 function AIChat() {
   const [prompt, setPrompt] = useState('');
@@ -6,23 +7,15 @@ function AIChat() {
   const [loading, setLoading] = useState(false);
 
   const handleGenerate = async () => {
+    if (!prompt.trim()) return;
     setLoading(true);
-    const token = localStorage.getItem('token'); // Gets JWT token saved after login
 
     try {
-      const res = await fetch('http://127.0.0.1:8000/api/genai', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}` // Passes JWT token required by current_user backend dependency
-        },
-        body: JSON.stringify({ prompt: prompt })
-      });
-
-      const data = await res.json();
-      setResponse(data.response);
+      const res = await api.post('/chat', { prompt: prompt });
+      setResponse(res.data.response);
     } catch (error) {
       console.error('Error fetching AI response:', error);
+      setResponse('Failed to get response from AI assistant.');
     } finally {
       setLoading(false);
     }
@@ -32,15 +25,19 @@ function AIChat() {
     <div className="container mt-4">
       <h3>Ask AI Assistant</h3>
       <div className="mb-3">
-        <textarea 
-          className="form-control" 
-          rows="3" 
-          value={prompt} 
-          onChange={(e) => setPrompt(e.target.value)} 
+        <textarea
+          className="form-control"
+          rows="3"
+          value={prompt}
+          onChange={(e) => setPrompt(e.target.value)}
           placeholder="Describe your issue or ask a question..."
         />
       </div>
-      <button className="btn btn-primary" onClick={handleGenerate} disabled={loading}>
+      <button
+        className="btn btn-primary"
+        onClick={handleGenerate}
+        disabled={loading}
+      >
         {loading ? 'Generating...' : 'Submit to AI'}
       </button>
 
